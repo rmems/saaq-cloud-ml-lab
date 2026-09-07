@@ -1,0 +1,86 @@
+name: azure-oidc-preflight
+
+# Manual-only preflight: proves GitHub Actions -> Azure OIDC authentication
+# for Dioscuri-managed training infrastructure WITHOUT deploying or mutating
+# any Azure resource. See providers/azure/oidc-preflight.md for required setup.
+#
+# GitHub #66. Do not add push/pull_request triggers to this workflow, and do
+# not add any Azure resource-creating step to it.
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    name: Azure OIDC preflight (read-only)
+    runs-on: ubuntu-latest
+    environment: azure-oidc-preflight
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Azure login (OIDC)
+        id: login
+        uses: azure/login@7ddb5af1ef8758cf1353cf3b42f940aee27ba21c # v3.0.2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Read-only identity/subscription inspection + report
+        id: preflight
+        if: always()
+        shell: bash
+        env:
+          LOGIN_OUTCOME: ${{ steps.login.outcome }}
+        run: |
+          set +e
+          if [ "$LOGIN_OUTCOME" = "success" ]; then
+            # Output is discarded, not saved to a file: this file would contain
+            # subscription/tenant identifiers, and only the exit code is used.
+            az account show --output json > /dev/null
+            status=$?
+          else
+            status=1
+          fi
+          set -e
+
+          if [ "$status" -eq 0 ]; then
+            result="PASS"
+          else
+            result="FAIL"
+          fi
+
+          {
+            echo "# Azure OIDC Preflight Report"
+            echo
+            echo "- Repository: \`${GITHUB_REPOSITORY}\`"
+            echo "- Commit: \`${GITHUB_SHA}\`"
+            echo "- Workflow run: \`${GITHUB_RUN_ID}\` (attempt ${GITHUB_RUN_ATTEMPT})"
+            echo "- Triggered by: \`${GITHUB_ACTOR}\`"
+            echo "- Status: **${result}**"
+            if [ "$LOGIN_OUTCOME" != "success" ]; then
+              echo "- The Azure OIDC login step did not succeed (outcome: \`${LOGIN_OUTCOME}\`); no Azure API call was made. See the login step's log for the token-exchange error."
+            fi
+            echo
+            echo "This workflow performed a read-only \`az account show\` only. No Azure"
+            echo "resource was created, updated, or deleted. Subscription ID, tenant ID,"
+            echo "and any other account identifiers are intentionally omitted from this"
+            echo "report — see providers/azure/oidc-preflight.md."
+          } > preflight-report.md
+
+          cat preflight-report.md
+          exit "$status"
+
+      - name: Upload preflight report
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: azure-oidc-preflight-report
+          path: preflight-report.md
+          retention-days: 90
