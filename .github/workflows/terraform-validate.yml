@@ -61,6 +61,10 @@ jobs:
               echo "Validating module: $d"
               terraform -chdir="$d" init -backend=false
               terraform -chdir="$d" validate
+              if [ -d "$d/tests" ]; then
+                echo "Running tests for module: $d"
+                terraform -chdir="$d" test
+              fi
               validated=$((validated + 1))
             fi
           done

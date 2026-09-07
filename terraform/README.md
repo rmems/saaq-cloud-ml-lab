@@ -14,6 +14,8 @@ terraform/
   modules/                   Reusable, provider-agnostic interfaces
     artifact_bucket/         Object storage bucket/container abstraction
     service_account/         IAM principal + minimal bindings abstraction
+    training_node/           AWS bounded GPU training instance + IAM instance profile
+    training_execution/      AWS SageMaker training execution role + ECR repository
 
   envs/                      Environment stacks that compose modules
     ibm-dev/                 IBM Cloud dev (HCP: dioscuri-cloud-ibm-dev)
