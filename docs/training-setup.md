@@ -42,7 +42,7 @@ GitLab secondary CI: [issue #1](https://gitlab.com/rmems/Dioscuri-Cloud/-/issues
 | HashiCorp ~$500 | ~2026-11-10 | HCP Terraform (not GPU) |
 | GCP $10/mo | Monthly | Planning only |
 
-IBM and Oracle trial credits expired 2026-06-28 — not the training execution path. See `docs/credits/inventory.md`.
+IBM and Oracle promo credits are **fully exhausted** (operator confirmed 2026-08-20; trial window ended 2026-06-28) — not the training execution path. See `docs/credits/inventory.md`.
 
 ## Guardrails
 

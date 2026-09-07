@@ -19,3 +19,9 @@ override.tf.json
 # CLI config
 .terraformrc
 terraform.rc
+
+# IDE / agent tool scratch dirs (never commit local tool state)
+.cursor/
+.kilo/
+.kiro/
+node_modules/

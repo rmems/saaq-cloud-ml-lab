@@ -175,9 +175,15 @@ committed and never placed in the SAAQ artifact buckets.
 
 ## Provider mapping
 
+**Status (2026-08-20):** IBM and Oracle **promo credits are exhausted** (`docs/credits/inventory.md`).
+The IBM/Oracle SAAQ store + CPU validation path is **blocked** until AWS student credits fund a
+replacement (see GitHub #47 / #52 / #53 training epic). HCP `ibm-dev` / `oracle-dev` workspaces
+remain skeleton-only for historical Terraform layout.
+
 | Concern | Provider | Notes |
 |---|---|---|
-| Canonical artifact store + CPU validation host | Oracle (A1.Flex + Object Storage) | persistent, main burn; expires 2026-06-28 |
-| Mirror store + serverless CPU validation jobs | IBM (COS + Code Engine) | expires 2026-06-28 |
-| GPU re-run of existing runs / fresh cloud-model runs | AWS (deferred issues) | weights + GPU; expires 2027-03 |
-| Control plane (state, plans) | HashiCorp HCP | no provider spend |
+| Canonical artifact store | ~~Oracle~~ → **AWS S3 (deferred)** | Storage only — see `terraform/envs/aws-training` (GitHub #47). Oracle promo exhausted 2026-06-28; Always Free OCI leftovers are not the SAAQ primary path |
+| CPU validation host | ~~Oracle~~ → **undetermined (deferred)** | S3 cannot run the validation commands above — a compute resource (e.g. AWS EC2/Fargate) is not yet planned; track in a follow-on issue before reactivating this path |
+| Mirror store + serverless CPU validation jobs | ~~IBM~~ → **deferred** | IBM promo exhausted 2026-06-28; no new COS/Code Engine spend |
+| GPU re-run of existing runs / fresh cloud-model runs | AWS (GitHub #53/#54) | weights + GPU; student credits expire 2027-03-15 |
+| Control plane (state, plans) | HashiCorp HCP | no provider GPU spend |

@@ -1,6 +1,6 @@
 # HCP Terraform Provider Variable Map
 
-This document maps **planned** HCP Terraform workspace variables to Terraform inputs and provider environment variables. Provider blocks are not wired yet in `terraform/envs/ibm-dev` or `terraform/envs/oracle-dev`; tables below describe what operators should configure once wiring lands (#47, #48).
+This document maps **planned** HCP Terraform workspace variables to Terraform inputs and provider environment variables. Provider blocks are not wired yet in `terraform/envs/ibm-dev` (no tracking issue — IBM credits are currently exhausted, see `docs/credits/inventory.md`) or `terraform/envs/oracle-dev` (#48); tables below describe what operators should configure once wiring lands. AWS provider wiring landed with #47 (`terraform/envs/aws-training`) — see the AWS section below, which is active now rather than planned.
 
 **Do not commit values** for sensitive variables.
 
@@ -69,7 +69,7 @@ No provider credentials. Common variables only.
 Workspace: `dioscuri-cloud-ibm-dev`  
 Working directory: `terraform/envs/ibm-dev`
 
-Active once IBM provider block is added (#47):
+Active once IBM provider block is added (no tracking issue yet — IBM credits are currently exhausted, see `docs/credits/inventory.md`):
 
 | HCP key | Category | Sensitive | Terraform variable (future) | Notes |
 |---|---|---|---|---|
@@ -96,6 +96,32 @@ Active once OCI provider block is added (#48):
 | `OCI_COMPARTMENT_OCID` | env | yes | `compartment_ocid` | Target compartment for resources |
 
 Planned transitional auth: key-based `~/.oci/config` locally; mirror to HCP for remote runs. Migrate to workload identity when available. Not active until provider wiring lands.
+
+## AWS (`dioscuri-cloud-aws-training`) — provider auth (env-native, active as of #47)
+
+Workspace: `dioscuri-cloud-aws-training`  
+Working directory: `terraform/envs/aws-training`
+
+Unlike IBM/Oracle, AWS credentials and region are HCP **environment**
+variables read natively by the AWS provider's SDK credential chain.
+`provider "aws" {}` in `terraform/envs/aws-training/providers.tf` takes
+**no explicit arguments**, and there are **no** matching `variable` blocks
+for these in Terraform:
+
+| HCP key | Category | Sensitive | Terraform variable | Notes |
+|---|---|---|---|---|
+| `AWS_REGION` | env | no | none — read by provider SDK | e.g. `us-east-1` |
+| `AWS_ACCESS_KEY_ID` | env | yes | none — read by provider SDK | Prefer OIDC roles later (future issue); keep keys temporary |
+| `AWS_SECRET_ACCESS_KEY` | env | yes | none — read by provider SDK | Never commit |
+
+Terraform variables (scaffold inputs, active now):
+
+| HCP key | Category | Sensitive | Default in code | Notes |
+|---|---|---|---|---|
+| `bucket_name` | terraform | no | none (required) | Globally unique; set in HCP workspace, never committed |
+| `force_destroy` | terraform | no | `false` | Keep `false` for the persistent training bucket |
+| `noncurrent_version_expiration_days` | terraform | no | `90` | Bounds versioned-object storage cost |
+| `abort_incomplete_multipart_upload_days` | terraform | no | `7` | Required lifecycle rule (issue #47) |
 
 ## Never commit
 

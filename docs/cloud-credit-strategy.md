@@ -7,9 +7,9 @@ This strategy turns the current credit portfolio into explicit provider roles so
 | Provider | Credit / Trial | Status | Role |
 |---|---:|---|---|
 | Vultr | `$250` promo credit | Closed out on `2026-05-28`; `$237.31` consumed and `$12.69` expired. | Historical serverless inference sprint only; inactive for near-term execution. |
-| IBM Cloud | `$200` cloud credit | **Expired 2026-06-28.** | Historical watsonx/COS notes only; not the active training path. |
+| IBM Cloud | `$200` cloud credit | **Exhausted 2026-06-28** ($0 remaining; operator confirmed 2026-08-20). | Historical watsonx/COS notes only; not the active training path. |
 | IBM watsonx | Free trial | Historical; do not plan new training spend. | Managed AI notes only. |
-| Oracle Cloud | `$300` free trial | **Expired 2026-06-28.** | Document Always Free leftovers vs paid risk; not the active training path. |
+| Oracle Cloud | `$300` free trial | **Exhausted 2026-06-28** ($0 promo remaining; operator confirmed 2026-08-20). | Document Always Free leftovers vs paid risk; not the active training path. |
 | DigitalOcean | Student credits | Active per inventory. | Simple deployments and possible bounded GPU smoke tests. |
 | AWS | Student credits | Active per inventory. | Certification-aligned managed ML and storage labs. |
 | Azure | Student credits | Active per inventory. | Certification-aligned Azure ML/resource-group labs. |

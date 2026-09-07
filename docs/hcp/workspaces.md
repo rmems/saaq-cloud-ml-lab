@@ -63,12 +63,14 @@ Recommended HCP project/folder grouping (optional in UI):
 - `dioscuri-cloud/core` -> `dioscuri-cloud-hcp-core`
 - `dioscuri-cloud/providers/ibm` -> `dioscuri-cloud-ibm-dev`
 - `dioscuri-cloud/providers/oracle` -> `dioscuri-cloud-oracle-dev`
+- `dioscuri-cloud/providers/aws` -> `dioscuri-cloud-aws-training`
 
 | Workspace | Working directory | State boundary | Provider mapping | Variable set strategy |
 |---|---|---|---|---|
 | `dioscuri-cloud-hcp-core` | `infra/terraform/environments/dev` | HCP control-plane / onboarding metadata only | None | Common variables only |
 | `dioscuri-cloud-ibm-dev` | `terraform/envs/ibm-dev` | IBM dev account / resource group | IBM Cloud | Common + IBM (`IBMCLOUD_*`) |
 | `dioscuri-cloud-oracle-dev` | `terraform/envs/oracle-dev` | Oracle dev tenancy / compartment | Oracle Cloud | Common + OCI (`OCI_*`) |
+| `dioscuri-cloud-aws-training` | `terraform/envs/aws-training` | AWS training account — S3 bucket + IAM primitives for datasets/checkpoints/logs | AWS | Common + AWS (`AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`) |
 
 IBM and Oracle workspaces must remain isolated (separate state, separate sensitive variable sets).
 
@@ -77,12 +79,14 @@ VCS setup: `docs/hcp/vcs-integration.md`
 
 ### SAAQ workload note
 
-The `ibm-dev` and `oracle-dev` workspaces back the SAAQ artifact store + CPU
-validation pipeline (explore / validate / store the corinth-canal SAAQ runs that
-feed `Surrogate_Viz.jl`). Object storage layout, the portable run manifest, the
-sync contract, and CPU-only validation jobs are defined in
-`docs/saaq/cloud-store.md`. GPU re-runs (which require GGUF/safetensors weights)
-are deferred to separate issues and are not part of these dev workspaces.
+**IBM and Oracle promo credits are exhausted** (operator confirmed 2026-08-20; see
+`docs/credits/inventory.md`). The `ibm-dev` and `oracle-dev` workspaces are
+**skeleton-only** — do not apply billable IBM/Oracle resources for SAAQ store/validate.
+
+The original SAAQ artifact store + CPU validation design lives in
+`docs/saaq/cloud-store.md`; execution is **deferred** to the AWS training path
+(GitHub #47, #52, #53). GPU re-runs (GGUF/safetensors weights) remain separate
+deferred issues and are not part of these dev workspaces.
 
 ## Deferred workspaces (document only; do not create unless needed)
 
@@ -167,10 +171,3 @@ Practically:
 - GPU compute is billed by cloud providers (AWS/Azure/DO), not HashiCorp.
 - Track provider compute in `cost-ledger.md`.
 
-## Planned workspace (training)
-
-| Workspace | Working directory | Purpose |
-|---|---|---|
-| `dioscuri-cloud-aws-training` | `terraform/envs/aws-training` | S3 training bucket + IAM (GitHub #47) |
-
-Add to HCP UI when `terraform/envs/aws-training` lands.

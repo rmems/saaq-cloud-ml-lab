@@ -99,8 +99,15 @@ jobs:
         run: |
           terraform -chdir=terraform/envs/oracle-dev init -backend=false
           terraform -chdir=terraform/envs/oracle-dev validate
+          terraform -chdir=terraform/envs/oracle-dev test
 
       - name: Validate ibm-dev scaffold environment
         run: |
           terraform -chdir=terraform/envs/ibm-dev init -backend=false
           terraform -chdir=terraform/envs/ibm-dev validate
+
+      - name: Validate aws-training scaffold environment
+        run: |
+          terraform -chdir=terraform/envs/aws-training init -backend=false
+          terraform -chdir=terraform/envs/aws-training validate
+          terraform -chdir=terraform/envs/aws-training test

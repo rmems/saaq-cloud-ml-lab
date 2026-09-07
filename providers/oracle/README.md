@@ -6,7 +6,7 @@ Oracle Cloud is assigned to persistent free-tier services, lightweight Rust depl
 
 | Item | Status | Notes |
 |---|---|---|
-| Oracle Cloud free trial | Claimed: `$300` | Verify expiration and regional service availability in the Oracle console before creating resources. |
+| Oracle Cloud free trial | **Exhausted** (was `$300`, expired 2026-06-28) | Operator confirmed **$0 promo remaining** (2026-08-20). Always Free tier may still apply to retained resources — review monthly for paid risk. |
 
 ## Account And Region Notes
 
